@@ -1,31 +1,29 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class=container>
-    
+
     <div class="row p-4 mt-4 row align-items-center justify-content-center">
         <h1>Add a new question</h1>
     </div>
 
     {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-            <span>{{ message }}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-            {{ message }}
+        {% if messages %}
+            {% for message in messages %}
+                <div id="successMessage" class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-    
 
     <div class="row p-4 m-2 align-items-center justify-content-center">
-        
+
         <form action="{{ url_for('questions_add') }}" , method="POST">
-            
+
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="subject">Subject</label>
@@ -40,40 +38,44 @@
                     <textarea class="form-control" id="question" name="question" rows="3" required=true></textarea>
                 </div>
             </div>
-            
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="status">Status / Priority</label>
                     <select id="status" name="status" class="form-control" required=true>
                         <option selected></option>
-                            {% for status in statusses %}
+                        {% for status in statusses %}
                         <option value=" {{ status['id'] }}">{{status['status']}}</option>
-                    {%endfor%}
-                </select>
+                        {%endfor%}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" name="deadline" class="form-control" id="deadline" required=true>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="journalist">Journalist - </label>
-                    <a class="align-right text-right" href=" {{ url_for('journalists') }} " target=_blank>add new</a>
+                    <a class="align-right text-right" href="#" data-toggle="modal" data-target="#AddJournalist">add
+                        new</a>
                     <select id="journalist" name="journalist" class="form-control" required=true>
-                            <option selected></option>
-                                {% for journalist in journalists %}
-                                    <option value="{{ journalist['id'] }}">{{journalist['first_name']}}
-                                    {{journalist['middle_name']}} {{journalist['last_name']}}</option>
-                                {%endfor%}
-                        </select>
+                        <option selected></option>
+                        {% for journalist in journalists %}
+                        <option value="{{ journalist['id'] }}">{{journalist['first_name']}}
+                            {{journalist['middle_name']}} {{journalist['last_name']}}</option>
+                        {%endfor%}
+                    </select>
                 </div>
             </div>
 
             <div class="form-row">
+
                 <div class="form-group col-md-12">
-                    <label for="deadline">Deadline</label>
-                    <input type="date" name="deadline" class="form-control" id="deadline" required=true>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="spokesperson">Assigned Spokesperson</label>
+                    <label for="spokesperson">Assigned Spokesperson - </label>
+                    <a class="align-right text-right" href="#" data-toggle="modal" data-target="#AddSpokesperson">add
+                        new</a>
                     <select id="spokesperson" name="spokesperson" class="form-control" required=true>
                         <option selected></option>
                         {% for spokesperson in spokespersons %}
@@ -84,25 +86,171 @@
                     </select>
                 </div>
             </div>
-            {% if themes %}
-            <span><strong>Select which Theme(s) this question belongs to</strong><br></span>
-            {% for i in range(0,themes|length) %}
-            <div class="form-check mt-2">
-                <input class="form-check-input" type="checkbox" value="" id="themecheck{{i+1}}">
-                <label class="form-check-label" name="theme" for="themecheck{{i+1}}">
-                    Theme {{i}}
-                </label>
-            </div>
-            {%endfor%}
-            {%endif%}
             <div class="form-row align-items-center justify-content-center">
                 <button type="submit" class="mt-2 btn btn-outline-secondary">Submit Question</button>
             </div>
         </form>
     </div>
 </div>
-{% endblock %}
 
-<script>
+<!-- Modal Journalist -->
+<div>
+    <div class="modal fade" tabindex=-1 aria-labeledby="FormModal" aria-hidden="true" id="AddJournalist" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add a Journalist</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-4 m-4 align-items-center justify-content-center">
 
-</script>
+                        <form action="{{ url_for('journalists_add', redirect='questions') }}", method="POST">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="fname">First Name</label>
+                                    <input type="text" class="form-control" id="fname" name="fname" placeholder="first name">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="mname">middle Name</label>
+                                    <input type="text" class="form-control" id="mname" name="mname" placeholder="middle name">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="fname">Last Name</label>
+                                    <input type="text" class="form-control" id="lname" name="lname" placeholder="last name">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="outlet">Media Outlet</label>
+                                <a class="align-right text-right" href="#" data-toggle="modal"
+                                    data-target="#AddOutlet">add new</a>
+                                <select id="outlet" class="form-control" name="outlet">
+                                    <option selected></option>
+                                    {% for outlet in outlets %}
+                                    <option value="{{ outlet['id'] }}">{{outlet['name']}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+
+
+                            <div class="form-row align-items-center justify-content-center">
+                                <button type="submit" class="mt-2 btn btn-outline-secondary">Submit Journalist</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--- end Journalist -->
+<!-- Modal Outlet -->
+<div>
+    <div class="modal fade" id="AddOutlet" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add a Media Outlet</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-4 m-4 align-items-center justify-content-center">
+                        <form action="{{ url_for('media_add') }}" method="POST">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="name">
+                                </div>
+                                <div class="form-row align-items-center justify-content-center">
+                                    <div class="form-group col-md-6">
+                                        <label for="address">Address</label>
+                                        <input type="text" class="form-control" id="address" name="address" placeholder="address">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="city">City</label>
+                                        <input type="text" class="form-control" id="city" name="city" placeholder="city">
+                                    </div>
+                                    <button type="submit" class="mt-2 btn btn-outline-secondary">Submit</button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+<!-- Modal Spokesperson -->
+<div>
+    <div class="modal fade" id="AddSpokesperson" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add a Spokesperson</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-4 m-4 align-items-center justify-content-center">
+
+                        <form action=" {{ url_for('spokesperson_add') }}" method="POST">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="sptitle">Title</label>
+                                    <input type="text" class="form-control" id="sptitle" name="sptitle" placeholder="mr/mrs">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="spfname">First Name</label>
+                                    <input type="text" class="form-control" name="spfname" id="spfname" placeholder="...">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="spmname">middle Name (optional)</label>
+                                    <input type="text" class="form-control" name="spmname" id="spmname" placeholder="..." type="optional">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="splname">Last Name</label>
+                                    <input type="text" class="form-control" name="splname" id="splname" placeholder="...">
+                                </div>
+                            </div>
+                        <div class="form-row align-items-center justify-content-center">
+                            <button type="submit" id="SubmitApprove" class="mt-2 btn btn-outline-secondary">Submit</button>
+                        </div>
+                    </form>
+                        
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--- end Journalist -->
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                $('#example').DataTable();
+            });
+
+            $('#myModal').on('shown.bs.modal', function () {
+                $('#myInput').trigger('focus')
+            })
+            
+            // makes the flash message dissappear
+            setTimeout(function() { 
+                $('#successMessage').fadeOut('fast');
+            }, 3000); // <-- time in milliseconds
+
+        </script>
+        {% endblock %}

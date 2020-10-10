@@ -91,15 +91,83 @@ def register():
 
 
 #Default Navigation Items 
-@app.route("/journalists")
+@app.route("/journalists", methods=['GET','POST'])
 @login_required
 def journalists():
+    if request.method == 'POST':
+        next_url = request.form.get("next")
+        print(next_url)
+        if next_url:
+            print('Reached next URL')
+            return(redirect(next_url))
+        print("nothing in next url")
+        return render_template("journalists.html")    
+    
+    return render_template("journalists.html")
+
+@app.route("/journalists_add", methods=['GET','POST'])
+@login_required
+def journalists_add():
+
+    if request.method == 'GET':
+        return render_template('journalists.html')
+
+    if request.method == 'POST':
+
+        fname = request.form.get("fname")
+        mname = request.form.get("mname")
+        lname = request.form.get("lname")
+        outlet_id = request.form.get("outlet")
+        redirect_url = request.args.get("redirect")
+
+        # add values to journalist table
+        c = db_query(conn=db_conn(), sql="INSERT INTO journalists(first_name,middle_name,last_name) VALUES(?,?,?)",values=(fname,mname,lname))
+        # get created journalist id
+        lastrowid = c.lastrowid
+        # add media outlet value to mapping table
+        db_query(conn=db_conn(), sql="INSERT INTO JournalistMediaMap(journalist_id,media_id) VALUES(?,?)",values=(lastrowid,outlet_id))
+        flash("Journalist created")
+        if redirect_url == "questions":
+            return redirect(url_for('questions'))    
+    
     return render_template("journalists.html")
 
 @app.route("/media")
 @login_required
 def media():
     return render_template("media.html")
+
+@app.route("/media_add/", methods=['POST'])
+def media_add():
+    
+    if request.method == 'POST':
+
+        name = request.form.get("name")
+        address = request.form.get("address")
+        city = request.form.get("address")
+
+        # add values to media table
+        c = db_query(conn=db_conn(), sql="INSERT INTO media(name,address,city) VALUES(?,?,?)",values=(name,address,city))
+
+        flash("Media Outlet created")
+        return redirect(url_for('questions'))    
+    
+    return render_template("media.html")
+
+@app.route("/spokesperson_add", methods=["POST"])
+def spokesperson_add():
+
+    if request.method == "POST":
+        sptitle = request.form.get("sptitle")
+        spfname = request.form.get("spfname")
+        spmname = request.form.get("spmname")
+        splname = request.form.get("splname")
+    
+        c = db_query(conn=db_conn(), sql="INSERT INTO spokespersons(title,first_name,middle_name,last_name) VALUES(?,?,?,?)",values=(sptitle,spfname,spmname,splname))
+
+        flash("Added new spokesperson")
+        return redirect(url_for('questions'))
+
 
 @app.route('/questions', methods=['GET','POST'])
 @app.route('/questions/', methods=['GET','POST'])
@@ -123,6 +191,14 @@ def questions():
     for r in result:
         journalists.append(dict(r))
 
+    # extract list of Media Outlets to send to select fields
+    outlets = []
+    c = db_query(conn=db_conn(),sql = "SELECT * FROM media;")
+    result = c.fetchall()
+    
+    for r in result:
+        outlets.append(dict(r))
+    
     # extract list of journalists to send to select fields
     spokespersons = []
     c = db_query(conn=db_conn(),sql = "SELECT * FROM spokespersons;")
@@ -131,7 +207,14 @@ def questions():
     for r in result:
         spokespersons.append(dict(r))
 
-    return render_template("questions.html", questions=questions, journalists=journalists, spokespersons=spokespersons, statusses=statusses)
+    return render_template(
+        "questions.html", 
+        questions=questions, 
+        journalists=journalists, 
+        spokespersons=spokespersons, 
+        statusses=statusses, 
+        outlets=outlets
+        )
 
 @app.route('/questions_add', methods=['GET','POST'])
 @app.route('/questions_add/', methods=['GET','POST'])
@@ -161,18 +244,3 @@ def questions_add():
         if c:
             return redirect( url_for('home'))
 
-        
-
-
-@app.route("/themes")
-@login_required
-def themes():
-
-    return render_template("themes.html")
-
-# User Profile
-@app.route("/profile")
-@login_required
-def profile():
-
-    return render_template("profile.html")

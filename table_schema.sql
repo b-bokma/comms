@@ -69,12 +69,6 @@ CREATE TABLE `Status` (
 PRIMARY KEY (`id`)
 );
 
-DROP TABLE IF EXISTS `Themes`;
-CREATE TABLE `Themes` (
-`id` INTEGER NULL  DEFAULT NULL,
-`name` INTEGER NULL DEFAULT NULL,
-PRIMARY KEY (`id`)
-);
 
 DROP TABLE IF EXISTS `QuestionJournalistMap`;
 CREATE TABLE `QuestionJournalistMap` (
@@ -86,16 +80,6 @@ FOREIGN KEY (`question_id`) REFERENCES `Questions` (id),
 FOREIGN KEY (`journalist_id`) REFERENCES `Journalists` (id)
 );
 
-
-DROP TABLE IF EXISTS `QuestionThemeMap`;
-CREATE TABLE `QuestionThemeMap` (
-`id` INTEGER NULL  DEFAULT NULL,
-`question_id` INTEGER NULL DEFAULT NULL,
-`theme_id` INTEGER NULL DEFAULT NULL,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`question_id`) REFERENCES `Questions` (id),
-FOREIGN KEY (`theme_id`) REFERENCES `Themes` (id)
-);
 
 DROP TABLE IF EXISTS `Media`;
 CREATE TABLE `Media` (

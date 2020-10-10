@@ -11,15 +11,12 @@ INSERT INTO `Spokespersons` (`title`,`first_name`,`middle_name`,`last_name`) VAL
 INSERT INTO `Status` (`status`) VALUES ('High');
 INSERT INTO `Status` (`status`) VALUES ('Medium');
 INSERT INTO `Status` (`status`) VALUES ('Low');
-INSERT INTO `Themes` (`name`) VALUES ('Theme 1');
-INSERT INTO `Themes` (`name`) VALUES ('Theme 2');
+INSERT INTO `Status` (`status`) VALUES ('Done');
+INSERT INTO `Status` (`status`) VALUES ('Cancelled');
+INSERT INTO `Status` (`status`) VALUES ('Deleted');
 INSERT INTO `QuestionJournalistMap` (`question_id`,`journalist_id`) VALUES (1,1);
 INSERT INTO `QuestionJournalistMap` (`question_id`,`journalist_id`) VALUES (1,2);
 INSERT INTO `QuestionJournalistMap` (`question_id`,`journalist_id`) VALUES (2,1);
 INSERT INTO `QuestionJournalistMap` (`question_id`,`journalist_id`) VALUES (2,2);
-INSERT INTO `QuestionThemeMap` (`question_id`,`theme_id`) VALUES (1,1);
-INSERT INTO `QuestionThemeMap` (`question_id`,`theme_id`) VALUES (1,2);
-INSERT INTO `QuestionThemeMap` (`question_id`,`theme_id`) VALUES (2,1);
-INSERT INTO `QuestionThemeMap` (`question_id`,`theme_id`) VALUES (2,2);
 INSERT INTO `Media` (`name`,`address`,`city`) VALUES ('Media 1','Mediaweg 1','Amsterdam');
 INSERT INTO `Media` (`name`,`address`,`city`) VALUES ('Media 2','Mediastraat 2','Rotterdam');

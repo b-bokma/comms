@@ -1,6 +1,6 @@
 # table overview, used for the main page table
 table_overview = '''
-SELECT id,subject, status, created_on, deadline
+SELECT id,subject, status, deadline
 FROM (SELECT 
         questions.id, 
         status.status, 
@@ -33,8 +33,7 @@ SELECT
         journalists.first_name || ' ' || journalists.middle_name || ' ' || journalists.last_name AS journalist, 
         media.name AS media, 
         spokespersons.first_name || ' ' || spokespersons.middle_name || ' ' || spokespersons.last_name AS spokesperson, 
-        users.username,
-        themes.name AS theme
+        users.username
     FROM
         questions
         LEFT JOIN status ON status.id = questions.status_id
@@ -43,11 +42,9 @@ SELECT
         
         LEFT JOIN questionjournalistmap ON questionjournalistmap.question_id = questions.id
         LEFT JOIN questiondossiermap ON questiondossiermap.question_id = questions.id
-        LEFT JOIN questionthememap ON questionthememap.question_id = questions.id
         LEFT JOIN journalists ON questionjournalistmap.journalist_id = journalists.id
 
         LEFT JOIN journalistmediamap ON journalistmediamap.journalist_id = journalists.id
-        LEFT JOIN themes ON themes.id = questionthememap.theme_id
         LEFT JOIN media ON journalistmediamap.media_id = media.id
 ;
 '''

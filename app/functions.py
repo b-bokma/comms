@@ -3,6 +3,7 @@ from sqlite3 import Error
 from config import Config
 from flask import session,redirect
 from functools import wraps
+from flask import request
 
 ####
 # DB
@@ -46,6 +47,6 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
-            return redirect("/login")
+            return redirect("/login", next=request.url)
         return f(*args, **kwargs)
     return decorated_function
