@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block css%}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{%endblock%}
+{% block content %}
+<div class="container">
+    <div class="row mt-12"></div>
+    <div class="row p-4"><div class="col"><h1>Press Questions</h1></div></div>
+    <div class="row pl-4 pr-4"><div class="col"><p>Click the subject to view more details</p></div></div>
+    <div class="row p-4">
+      <div class="col-md-12">
+        <table id="example" datatable="" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    {% for key in table[0].keys() %}
+                            <th><strong>{{key}}</strong></th>
+                    {%endfor%}
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in table %}
+            
+                <TR>
+                    {% for key in item %}
+                    {% if key == 'id' %}
+                    <td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#myOutput{{item['id']}}">Open</button></td>
+                    {% else %}
+                        <TD>{{item[key]}}</TD>
+                    {%endif%}
+                    {%endfor%}
+                </TR>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    </div>
+
+    <!-- Button trigger modal -->
+    {% for item in details %}
+    <!-- Modal -->
+    <div>
+     <div class="modal fade" id="myOutput{{item['id']}}" role="dialog">
+       <div class="modal-dialog modal-lg">
+         <!-- Modal content-->
+         <div class="modal-content">
+           <div class="modal-header">
+             <h4 class="modal-title">Question {{ item['subject'] }}</h4>
+           </div>
+           <div class="modal-body">
+               <ul style="list-style:none; line-height:200%;">
+                   {% for i in item %}
+                   <li><strong>{{ i }}: </strong> {{ item[i] }}</li>
+                   {%endfor%}
+               </ul>
+           </div>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+     </div>
+   {% endfor %}
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    $('#example').DataTable();
+} );
+
+$('#myModal').on('shown.bs.modal', function () {
+  $('#myInput').trigger('focus')
+})
+
+</script>
+{% endblock %}

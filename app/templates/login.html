@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+
+  <head>
+    <title>{{title}}</title>
+    <meta charset="utf-8">
+    <meta name="description" content={{description}}>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="shortcut icon" href="/favicon.ico">
+  </head>
+
+  <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse order-last order-lg-first" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link" href={{ url_for('login') }}>Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    </ul>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#">Brand</a>
+            </div>
+        </nav>
+       </header>
+       <div class="container h-100">
+        <div class="row h-100 p-4">
+          <div class="card col-4 mx-auto my-auto align-middle">
+            <div class="card-body">
+              <h5 class="card-title">Login</h5>
+              {% if alert == "error" %}
+              <div class="alert alert-danger" role="alert">Login Unsuccesful</div>
+              {% elif alert == "success" %}
+              <div class="alert alert-success" role="alert">Registration Succesful.<br> You can now login here</div>
+              {%endif%}
+              <form action="{{ url_for('login') }}", method="POST">
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input name="email" type="email" class="form-control" id="mail" placeholder="Your email address">
+                </div>
+                <div class="form-group">
+                  <label>Password</label>
+                  <input name="password" type="password" class="form-control" id="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+        
+  </body>
+
+</html>

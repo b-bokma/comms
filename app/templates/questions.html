@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class=container>
+    
+    <div class="row p-4 mt-4 row align-items-center justify-content-center">
+        <h1>Add a new question</h1>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <span>{{ message }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+            {{ message }}
+
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    
+
+    <div class="row p-4 m-2 align-items-center justify-content-center">
+        
+        <form action="{{ url_for('questions_add') }}" , method="POST">
+            
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" name='subject' id="subject" placeholder="Subject"
+                        required=true>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="question">Question</label>
+                    <textarea class="form-control" id="question" name="question" rows="3" required=true></textarea>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="status">Status / Priority</label>
+                    <select id="status" name="status" class="form-control" required=true>
+                        <option selected></option>
+                            {% for status in statusses %}
+                        <option value=" {{ status['id'] }}">{{status['status']}}</option>
+                    {%endfor%}
+                </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="journalist">Journalist - </label>
+                    <a class="align-right text-right" href=" {{ url_for('journalists') }} " target=_blank>add new</a>
+                    <select id="journalist" name="journalist" class="form-control" required=true>
+                            <option selected></option>
+                                {% for journalist in journalists %}
+                                    <option value="{{ journalist['id'] }}">{{journalist['first_name']}}
+                                    {{journalist['middle_name']}} {{journalist['last_name']}}</option>
+                                {%endfor%}
+                        </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" name="deadline" class="form-control" id="deadline" required=true>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="spokesperson">Assigned Spokesperson</label>
+                    <select id="spokesperson" name="spokesperson" class="form-control" required=true>
+                        <option selected></option>
+                        {% for spokesperson in spokespersons %}
+                        <option value=" {{ spokesperson['id'] }}">
+                            {{spokesperson['first_name']}} {{spokesperson['middle_name']}} {{spokesperson['last_name']}}
+                        </option>
+                        {%endfor%}
+                    </select>
+                </div>
+            </div>
+            {% if themes %}
+            <span><strong>Select which Theme(s) this question belongs to</strong><br></span>
+            {% for i in range(0,themes|length) %}
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" value="" id="themecheck{{i+1}}">
+                <label class="form-check-label" name="theme" for="themecheck{{i+1}}">
+                    Theme {{i}}
+                </label>
+            </div>
+            {%endfor%}
+            {%endif%}
+            <div class="form-row align-items-center justify-content-center">
+                <button type="submit" class="mt-2 btn btn-outline-secondary">Submit Question</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+
+</script>

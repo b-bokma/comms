@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('questions') }}">Add questions</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('journalists') }}">Add journalists</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('media') }}">Add Media Outlet</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('themes') }}">Add theme</a>
+        </li>
+      </ul>
+  </div>
+  <div class="mx-auto order-0">
+    <a class="navbar-brand mx-auto" href=" {{ url_for('home') }}">COMMUNICATIONS DASHBOARD</a>
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+  </div>
+  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+      <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+              <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
+          </li>
+      </ul>
+  </div>
+</nav>
