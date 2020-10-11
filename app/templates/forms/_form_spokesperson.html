@@ -1,0 +1,29 @@
+<form action=" {{ url_for('spokesperson_add') }}" method="POST">
+    <div class="form-row">
+        <div class="form-group">
+            <label for="sptitle">Title</label>
+            <input type="text" class="form-control" id="sptitle" name="sptitle" placeholder="mr/mrs">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="spfname">First Name</label>
+            <input type="text" class="form-control" name="spfname" id="spfname" placeholder="...">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="spmname">middle Name (optional)</label>
+            <input type="text" class="form-control" name="spmname" id="spmname" placeholder="..." type="optional">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="splname">Last Name</label>
+            <input type="text" class="form-control" name="splname" id="splname" placeholder="...">
+        </div>
+    </div>
+<div class="form-row align-items-center justify-content-center">
+    <button type="submit" id="SubmitApprove" class="mt-2 btn btn-outline-secondary">Submit</button>
+</div>
+</form>

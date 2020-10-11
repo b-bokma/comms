@@ -4,8 +4,24 @@
 {%endblock%}
 {% block content %}
 <div class="container">
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+          <div id="successMessage" class="alert alert-primary alert-dismissible fade show" role="alert">
+              <span>{{ message }}</span>
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+          </div>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
     <div class="row mt-12"></div>
     <div class="row p-4"><div class="col"><h1>Press Questions</h1></div></div>
+    {% if table %}
     <div class="row pl-4 pr-4"><div class="col"><p>Click the subject to view more details</p></div></div>
     <div class="row p-4">
       <div class="col-md-12">
@@ -28,10 +44,17 @@
                         <TD>{{item[key]}}</TD>
                     {%endif%}
                     {%endfor%}
+                    <td><form action="{{ url_for('question_delete', id=item.id) }}" method=post>
+                      <input type=submit value=Delete></form></td>
                 </TR>
                 {% endfor %}
             </tbody>
-        </table></div>
+        </table>
+        {%else%}
+        <h3>No questions added yet. Click <a href=" {{ url_for( 'questions' ) }}">here</a> to get started.</h3>
+        
+        {%endif%}
+      </div>
     </div>
 
     <!-- Button trigger modal -->
@@ -44,6 +67,7 @@
          <div class="modal-content">
            <div class="modal-header">
              <h4 class="modal-title">Question {{ item['subject'] }}</h4>
+             <a data-toggle="modal" data-target="#editModal{{item['id']}}"><i class="fas fa-edit"></i></a>
            </div>
            <div class="modal-body">
                <ul style="list-style:none; line-height:200%;">
@@ -60,15 +84,42 @@
      </div>
    {% endfor %}
 </div>
+<!-- edit modal -->
+{% for item in details %}
+<div class="modal fade" id="editModal{{item['id']}}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+              </button>
+              <h4 class="modal-title" id="editModalLabel">Update Question</h4>
+          </div>
+          <div class="modal-body">
+              <form role="form" method=post action="{{ url_for('question_update') }}">
+                {% for i in item %}  
+                    {% if i == 'id' %}
+                      <input type="hidden" id="question_id" name="question_id" value="{{item[i]}}">
+                    {% elif i == 'email' %}
+                      <input type="hidden" id="created_by" name="created_by" value="{{item[i]}}">
+                    {% else %}
+                      <div class="form-group">
+                        <label for="{{item[i]}}" class="control-label">{{i}}</label>
+                        <input type="text" value={{item[i]}} class="form-control" name="{{i}}" id="{{i}}">
+                      </div>
+                      {%endif%}
+                {%endfor%}
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="mt-2 btn btn-outline-secondary">Update</button>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+{%endfor%}
 </div>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     $('#example').DataTable();
 } );
-
-$('#myModal').on('shown.bs.modal', function () {
-  $('#myInput').trigger('focus')
-})
-
 </script>
 {% endblock %}

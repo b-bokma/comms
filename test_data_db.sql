@@ -1,5 +1,5 @@
-INSERT INTO `Questions` (`status_id`,`deadline`,`created_by`,`spokesperson_id`,`subject`,`question`) VALUES (1,'2020-11-01 00:00:00',1,1,'Test 1','Test 1 test 1 test 1');
-INSERT INTO `Questions` (`status_id`,`deadline`,`created_by`,`spokesperson_id`,`subject`,`question`) VALUES (2,'2020-12-02 02:00:00',2,2,'Test 2','Test 2 testtest2');
+INSERT INTO `Questions` (`status_id`,`deadline`,`created_by`,`spokesperson_id`,`subject`,`question`,`deleted`) VALUES (1,'2020-11-01 00:00:00',1,1,'Test 1','Test 1 test 1 test 1',0);
+INSERT INTO `Questions` (`status_id`,`deadline`,`created_by`,`spokesperson_id`,`subject`,`question`,`deleted`) VALUES (2,'2020-12-02 02:00:00',2,2,'Test 2','Test 2 testtest2',0);
 INSERT INTO `Journalists` (`first_name`,`middle_name`,`last_name`) VALUES ('Henk','de','Vries');
 INSERT INTO `Journalists` (`first_name`,`middle_name`,`last_name`) VALUES ('Derk','de','Boer');
 INSERT INTO `JournalistMediaMap` (`journalist_id`,`media_id`) VALUES (1,1);

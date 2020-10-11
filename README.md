@@ -1,3 +1,9 @@
+# OPEN TODOS
+
+* user test the pages. Find places what can be improved and write this down. Having a to-do list is also good for the results
+* clear database from test data
+* create production ready pages
+
 # CS50 Final Project
 
 For the Final Project I have created a web app aimed at PR and Communication teams, where they can keep track of requests that have come in from journalists.
@@ -29,3 +35,10 @@ FLASK_RUN_PORT=
 * initiate the database using `python init_db.py`
 * This fills the database with some dummy data from `python test_data_db.sql`. If you want an empty DB, comment out this function
 * run `flask run` to start the application 
+
+## Improvements
+
+* Add edit forms for journalists and media outlets
+* Add possibility to label and group questions
+* add possibility to add multiple journalists to one question
+* add page to view all questions one journalists has asked

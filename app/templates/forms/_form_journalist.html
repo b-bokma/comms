@@ -1,0 +1,33 @@
+<form action="{{ url_for('journalists_add', redirect='questions') }}", method="POST">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="fname">First Name</label>
+            <input type="text" class="form-control" id="fname" name="fname" placeholder="first name">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="mname">middle Name</label>
+            <input type="text" class="form-control" id="mname" name="mname" placeholder="middle name">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="fname">Last Name</label>
+            <input type="text" class="form-control" id="lname" name="lname" placeholder="last name">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="outlet">Media Outlet</label>
+        <a class="align-right text-right" href="#" data-toggle="modal"
+            data-target="#AddOutlet">add new</a>
+        <select id="outlet" class="form-control" name="outlet">
+            <option selected></option>
+            {% for outlet in outlets %}
+            <option value="{{ outlet['id'] }}">{{outlet['name']}}</option>
+            {%endfor%}
+        </select>
+    </div>
+
+
+    <div class="form-row align-items-center justify-content-center">
+        <button type="submit" class="mt-2 btn btn-outline-secondary">Submit Journalist</button>
+    </div>
+</form>

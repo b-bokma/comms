@@ -16,6 +16,7 @@ CREATE TABLE `Questions` (
 `spokesperson_id` INTEGER NULL DEFAULT NULL,
 `subject` TEXT NOT NULL DEFAULT 'NULL',
 `question` MEDIUMTEXT NULL DEFAULT NULL,
+`deleted` INTEGER NOT NULL DEFAULT 0,
 PRIMARY KEY (`id`),
 FOREIGN KEY (`status_id`) REFERENCES `Status` (id),
 FOREIGN KEY (`created_by`) REFERENCES `Users` (id),
@@ -28,6 +29,7 @@ CREATE TABLE `Journalists` (
 `first_name` TEXT NULL DEFAULT NULL,
 `middle_name` TEXT NULL DEFAULT NULL,
 `last_name` TEXT NULL DEFAULT NULL,
+`deleted` INT NOT NULL DEFAULT 0,
 PRIMARY KEY (`id`)
 );
 
@@ -87,6 +89,7 @@ CREATE TABLE `Media` (
 `name` INTEGER NULL DEFAULT NULL,
 `address` INTEGER NULL DEFAULT NULL,
 `city` INTEGER NULL DEFAULT NULL,
+`deleted` INTEGER NOT NULL DEFAULT 0,
 PRIMARY KEY (`id`)
 );
 

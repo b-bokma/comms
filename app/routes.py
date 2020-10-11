@@ -11,10 +11,18 @@ from app.queries import table_overview, question_page
 
 from time import sleep
 
+### Functions
+@app.context_processor
+def utility_functions():
+    def print_in_console(message):
+        print(message)
+
+    return dict(mdebug=print_in_console)
 
 ### Index
 @app.route("/")
-@app.route("/index.html")
+@app.route("/index")
+@app.route("/home")
 @login_required
 def home():
 
@@ -34,6 +42,9 @@ def home():
     for row in res:
         question_details.append(dict(row))
 
+    if len(output) == 0:
+        output = None
+    
     return render_template("home.html",table=output, details=question_details)
 
 
@@ -94,16 +105,20 @@ def register():
 @app.route("/journalists", methods=['GET','POST'])
 @login_required
 def journalists():
-    if request.method == 'POST':
-        next_url = request.form.get("next")
-        print(next_url)
-        if next_url:
-            print('Reached next URL')
-            return(redirect(next_url))
-        print("nothing in next url")
-        return render_template("journalists.html")    
+    output = []
+    c = db_query(db_conn(),sql="SELECT * FROM journalists")
+    for row in c.fetchall():
+        output.append(dict(row))
+
+    # extract list of Media Outlets to send to select fields
+    outlets = []
+    c = db_query(conn=db_conn(),sql = "SELECT * FROM media;")
+    result = c.fetchall()
     
-    return render_template("journalists.html")
+    for r in result:
+        outlets.append(dict(r))
+    
+    return render_template("journalists.html", table=output, outlets=outlets)
 
 @app.route("/journalists_add", methods=['GET','POST'])
 @login_required
@@ -128,16 +143,30 @@ def journalists_add():
         db_query(conn=db_conn(), sql="INSERT INTO JournalistMediaMap(journalist_id,media_id) VALUES(?,?)",values=(lastrowid,outlet_id))
         flash("Journalist created")
         if redirect_url == "questions":
-            return redirect(url_for('questions'))    
+            return redirect(request.refferer)    
     
     return render_template("journalists.html")
+
+@app.route('/journalists_delete/<id>', methods=['POST'])
+def journalists_delete(id):
+
+    if isinstance(int(id),int):
+        sql = "UPDATE journalists SET deleted = 1 WHERE id={};".format(id)
+        db_query(db_conn(),sql=sql)
+        flash("Journalist removed")
+        return redirect( url_for('journalists'))
+    return redirect( url_for('journalists'))
 
 @app.route("/media")
 @login_required
 def media():
-    return render_template("media.html")
+    output = []
+    c = db_query(db_conn(),sql="SELECT * FROM media WHERE deleted = 0;")
+    for row in c.fetchall():
+        output.append(dict(row))
+    return render_template("media.html", table=output)
 
-@app.route("/media_add/", methods=['POST'])
+@app.route("/media_add/", methods=['GET','POST'])
 def media_add():
     
     if request.method == 'POST':
@@ -150,9 +179,19 @@ def media_add():
         c = db_query(conn=db_conn(), sql="INSERT INTO media(name,address,city) VALUES(?,?,?)",values=(name,address,city))
 
         flash("Media Outlet created")
-        return redirect(url_for('questions'))    
+        return redirect(request.referrer)
     
-    return render_template("media.html")
+    return render_template("question.html")
+
+@app.route('/media_delete/<id>', methods=['POST'])
+def media_delete(id):
+
+    if isinstance(int(id),int):
+        sql = "UPDATE media SET deleted = 1 WHERE id={};".format(id)
+        db_query(db_conn(),sql=sql)
+        flash("Media Outlet removed")
+        return redirect( request.referrer)
+    return redirect( request.referrer )
 
 @app.route("/spokesperson_add", methods=["POST"])
 def spokesperson_add():
@@ -228,11 +267,12 @@ def questions_add():
         journalist_id = request.form['journalist']
         deadline = request.form['deadline']
         spokesperson_id = request.form['spokesperson']
+        created_by = session.get('user_id')
 
         c = db_query( #query to update table questions
             conn=db_conn(), 
-            sql = "INSERT INTO questions(subject,question,status_id,deadline,spokesperson_id) VALUES(?,?,?,?,?)", 
-            values = (subject,question,status_id,deadline,spokesperson_id)
+            sql = "INSERT INTO questions(subject,question,status_id,deadline,spokesperson_id,created_by) VALUES(?,?,?,?,?,?)", 
+            values = (subject,question,status_id,deadline,spokesperson_id,created_by)
             )
         lastrowid = c.lastrowid
 
@@ -244,3 +284,79 @@ def questions_add():
         if c:
             return redirect( url_for('home'))
 
+@app.route('/question_delete/<id>', methods=['POST'])
+def question_delete(id):
+
+    if isinstance(int(id),int):
+        sql = "UPDATE questions SET deleted = 1 WHERE id={};".format(id)
+        db_query(db_conn(),sql=sql)
+        flash("Question removed")
+        return redirect( url_for('home'))
+    return redirect( url_for('home'))
+
+@app.route('/question_update', methods=['GET','POST'])
+@app.route('/question_update/', methods=['GET','POST'])
+@login_required
+def question_update():
+
+    if request.method == "POST":
+        question_id = request.form['question_id']
+        subject = request.form['subject']
+        question = request.form['question']
+        status = request.form['status']
+        journalist = request.form['journalist']
+        deadline = request.form['deadline']
+        spokesperson = request.form['spokesperson']
+
+        # get status id
+        if status:
+            res = db_query(db_conn(), sql="SELECT id FROM status WHERE status=?", values=(status))
+            if res:
+                for row in res.fetchone():
+                    status_id = row
+        # journalist id
+        if journalist:
+            res = db_query(db_conn(), sql="SELECT id FROM journalists WHERE first_name=?", values=(journalist))
+            if res:
+                for row in res.fetchone():
+                    journalist_id = row
+        # spokesperson id 
+        if spokesperson:
+            res = db_query(db_conn(), sql="SELECT id FROM spokespersons WHERE first_name=?", values=(spokesperson))
+            if res:
+                for row in res.fetchone():
+                    spokesperson_id = row
+        
+        print(status_id,journalist_id,spokesperson_id)
+        
+        #update question table
+        sql = """
+            UPDATE questions
+            SET 
+                subject = ?,
+                question = ?,
+                status_id = ?,
+                spokesperson_id = ?,
+                deadline = ?
+            WHERE id = ?
+        """
+        c = db_query(db_conn(), sql=sql, values=(
+            subject,question,status_id,spokesperson_id,deadline,question_id
+        ))
+        #update journalist mapping
+        sql = """
+            UPDATE questionjournalistmap
+            SET 
+                journalist_id = ?
+            WHERE question_id = ?
+        """
+        c = db_query(db_conn(), sql=sql, values=(
+            journalist_id,question_id
+        ))
+
+        if c:
+            flash("Succesfully Updated")
+            return redirect( url_for('home'))
+
+        #lastrowid = c.lastrowid
+    return redirect( url_for('home'))
